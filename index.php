@@ -1,15 +1,6 @@
 <?php
 
 require 'dbconn.php';
-$address = "localhost";
-$user = "phptest";
-$password = "phptest";
-$database = "phptest";
-$port = "3306";
-        
-$db = new dbconn($address, $user, $password, $database, $port);
-//$db->getName();
-$db->getResult("SELECT last FROM testtable");
 
 /**
  * Step 1: Require the Slim Framework
@@ -32,13 +23,17 @@ require 'Slim/Slim.php';
  * of setting names and values into the application constructor.
  */
 $app = new \Slim\Slim(array(
-    'debug'             => true,
-    'mode'              => 'development',
-    'log.level'         => \Slim\Log::DEBUG,
-    'log.enabled'       => true
-));
+            'debug' => true,
+            'mode' => 'development',
+            'log.level' => \Slim\Log::DEBUG,
+            'log.enabled' => true
+        ));
 
 $app->setName('foo');
+
+function authenticated() {
+    return true;
+}
 
 /**
  * Step 3: Define the Slim application routes
@@ -48,30 +43,50 @@ $app->setName('foo');
  * argument for `Slim::get`, `Slim::post`, `Slim::put`, and `Slim::delete`
  * is an anonymous function.
  */
-
 // GET route
-$app->get('/getallnames', function () {
-    echo "/getallnames"; 
-});
+$app->get('/locations', function () {
+            
+        });
 
-$app->get('/', function () {
-    echo "/";
-});
+$app->get('/messages/add/:longitude/:latitude/:userID/:text', function ($longitude, $latitude, $userID, $text) {
+
+            if (authenticated()) {
+                dbconn::addMessage($longitude, $latitude, $userID, $text);
+            }
+        });
+
+
+$app->get('/messages/get/:id', function ($id) {
+
+            $result = dbconn::getMessage($id);
+        });
+
+$app->get('/messages/getall/', function () {
+
+            $result = dbconn::getAllMessages();
+        });
+
+$app->get('/messages/delete/:id', function ($id) {
+
+            if (authenticated()) {
+                $result = dbconn::deleteMessage($id);
+            }
+        });
 
 // POST route
 $app->post('/post', function () {
-    echo 'This is a POST route';
-});
+            echo 'This is a POST route';
+        });
 
 // PUT route
 $app->put('/put', function () {
-    echo 'This is a PUT route';
-});
+            echo 'This is a PUT route';
+        });
 
 // DELETE route
 $app->delete('/delete', function () {
-    echo 'This is a DELETE route';
-});
+            echo 'This is a DELETE route';
+        });
 
 /**
  * Step 4: Run the Slim application
