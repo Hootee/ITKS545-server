@@ -30,8 +30,8 @@ CREATE TABLE IF NOT EXISTS `data` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `data_text` varchar(1000) COLLATE utf8_unicode_ci NOT NULL,
   `data_userID` int(11) NOT NULL,
-  `data_longitude` int(11) NOT NULL,
-  `data_latitude` int(11) NOT NULL,
+  `data_longitude` float(10,7) NOT NULL,
+  `data_latitude` float(10,7) NOT NULL,
   `data_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
