@@ -23,10 +23,10 @@ require 'Slim/Slim.php';
  * of setting names and values into the application constructor.
  */
 $app = new \Slim\Slim(array(
-            'debug' => true,
-            'mode' => 'development',
-            'log.level' => \Slim\Log::DEBUG,
-            'log.enabled' => true
+    'debug' => true,
+    'mode' => 'development',
+    'log.level' => \Slim\Log::DEBUG,
+    'log.enabled' => true
         ));
 
 $app->setName('foo');
@@ -34,6 +34,14 @@ $app->setName('foo');
 function authenticated() {
     return true;
 }
+
+$address = 'localhost';
+$user = 'toarjusa';
+$password = 'mysql';
+$database = 'toarjusa';
+$port = '3306';
+
+$db = new dbconn($address, $user, $password, $database, $port);
 
 /**
  * Step 3: Define the Slim application routes
@@ -51,25 +59,27 @@ $app->get('/locations', function () {
 $app->get('/messages/add/:longitude/:latitude/:userID/:text', function ($longitude, $latitude, $userID, $text) {
 
             if (authenticated()) {
-                dbconn::addMessage($longitude, $latitude, $userID, $text);
+                global $db;
+                $db->addMessage($longitude, $latitude, $userID, $text);
             }
         });
 
 
 $app->get('/messages/get/:id', function ($id) {
-
-            $result = dbconn::getMessage($id);
+            global $db;
+            $result = $db->getMessage($id);
         });
 
 $app->get('/messages/getall/', function () {
-
-            $result = dbconn::getAllMessages();
+            global $db;
+            $result = $db->getAllMessages();
         });
 
 $app->get('/messages/delete/:id', function ($id) {
 
             if (authenticated()) {
-                $result = dbconn::deleteMessage($id);
+                global $db;
+                $result = $db->deleteMessage($id);
             }
         });
 
