@@ -44,7 +44,10 @@ CREATE TABLE IF NOT EXISTS `data` (
 
 CREATE TABLE IF NOT EXISTS `users` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `users_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `users_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `users_password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `users_email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,  
+  `users_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 

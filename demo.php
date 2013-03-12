@@ -5,9 +5,9 @@ require_once 'oauth-php/library/OAuthServer.php';
 require_once 'oauth-php/library/OAuthStore.php';
 OAuthStore::instance('MySQL', array(
 	'server'   => 'localhost',
-	'username' => 'phptest',
-	'password' => 'phptest',
-	'database' => 'phptest'
+	'username' => 'itks545',
+	'password' => 'itks545',
+	'database' => 'itks545_oauth'
 ));
 
 
@@ -95,8 +95,8 @@ $API->get('/authorize', function () {
 
 	        // Set the request token to be authorized or not authorized
 	        // When there was a oauth_callback then this will redirect to the consumer
-	        $server->authorizeFinish($authorized, $user_id);
-	
+	        $verifier = $server->authorizeFinish($authorized, $user_id);
+                echo $verifier;
 	        // No oauth_callback, show the user the result of the authorization
 	        // ** your code here **
 	   }
