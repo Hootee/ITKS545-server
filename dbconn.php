@@ -62,11 +62,13 @@ SQL;
         $statement = $this->db->prepare($query);
         $statement->bind_param('sss',$users_name, $users_password, $users_email);
         $statement->execute();
+        $user_id = $statement->insert_id;
         if ($statement->errno > 0) {
             echo "Failed to execute prepared statement: " . $statement->error;
             exit();
         }
         $statement->free_result();
+        return $user_id;
     }
 
     /**

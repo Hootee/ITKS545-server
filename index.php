@@ -185,6 +185,65 @@ $app->get('/register_user', function () {
             require '/register_user/index.php';
         });
 
+// This is a GET path to example.com/request_token
+$app->post('/save_user', function () {
+            global $db;
+            $user_id = $db->addUser($_POST["users_name"], $_POST["users_password"], $_POST["users_email"]);
+            $consumer = array(
+	    // These two are required
+	    'requester_name' => $_POST["users_name"],
+	    'requester_email' => $_POST["users_email"]
+	);
+        $store = OAuthStore::instance(); 
+	$key   = $store->updateConsumer($consumer, $user_id);
+	// Get the complete consumer from the store
+	$consumer = $store->getConsumer($key, $user_id);
+
+	// The tokens
+	$tokens = array(
+		'consumer_key'    => $consumer['consumer_key'],
+		'consumer_secret' => $consumer['consumer_secret']
+	);
+	// Set content type to JSON
+    header("Content-Type: application/json");
+    // Output JSON
+	echo json_encode($tokens);
+        });
+
+        
+ $app->get('/register', function () {
+	$user_id = 1;
+	// This should come from a form filled in by the requesting user
+	$consumer = array(
+	    // These two are required
+	    'requester_name' => 'John Doe',
+	    'requester_email' => 'john@example.com'
+	
+	    // These are all optional
+	    /*'callback_uri' => 'http://example.com/oauth_callback',
+	    'application_uri' => 'http://example.com/',
+	    'application_title' => 'Example consumer app',
+	    'application_descr' => 'To test out the server',
+	    'application_notes' => '',
+	    'application_type' => 'website',
+	    'application_commercial' => 0*/
+	);
+	// Register the consumer
+	$store = OAuthStore::instance(); 
+	$key   = $store->updateConsumer($consumer, $user_id);
+	// Get the complete consumer from the store
+	$consumer = $store->getConsumer($key, 2);
+
+	// The tokens
+	$tokens = array(
+		'consumer_key'    => $consumer['consumer_key'],
+		'consumer_secret' => $consumer['consumer_secret']
+	);
+	// Set content type to JSON
+    header("Content-Type: application/json");
+    // Output JSON
+	echo json_encode($tokens);
+});
 /**
  * Step 4: Run the Slim application
  *

@@ -6,17 +6,8 @@
     </head>
     <body>
         <div>
-            <?php
-            if (isset($_POST["Register"])) {
-                require '../database.php';
-                $db->addUser($_POST["users_name"], $_POST["users_password"], $_POST["users_email"]);
-                ?>
-                <p><strong>User added!</strong></p>
-                <?php
-            } else {
-                ?>
-
-                <form method="post" action="<?php echo $action?>">
+            
+                <form method="post" action="/index.php/save_user">
                     <fieldset>
                         <legend>Register</legend>
                         <div>
@@ -34,7 +25,6 @@
                     </fieldset>
                     <input type="submit" id="Register" name="Register" value="Register">
                 </form>
-            <?php } ?>
         </div>
     </body>
 </html>

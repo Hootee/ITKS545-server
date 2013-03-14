@@ -45,7 +45,7 @@ $API->get('/register', function () {
 	$store = OAuthStore::instance(); 
 	$key   = $store->updateConsumer($consumer, $user_id);
 	// Get the complete consumer from the store
-	$consumer = $store->getConsumer($key, $user_id);
+	$consumer = $store->getConsumer($key, 3);
 
 	// The tokens
 	$tokens = array(
