@@ -203,29 +203,27 @@ $app->post('/save_user', function () {
 $app->get('/login/:users_name/:users_password', function ($users_name, $users_password) {
             global $db;
             $user_id = $db->login($users_name, $users_password);
-            $consumer = array(
-	    // These two are required
-	    'requester_name' => $users_name,
-	    'requester_email' => "itks545@jyu"
-	);
         $store = OAuthStore::instance(); 
-	$key   = $store->updateConsumer($consumer, $user_id);
-	// Get the complete consumer from the store
-	$consumer = $store->getConsumer($key, $user_id);
+        $creds = $store->listConsumers($user_id);
 
-	// The tokens
-	$tokens = array(
-		'user_id'         => $user_id,
-		'consumer_key'    => $consumer['consumer_key'],
-		'consumer_secret' => $consumer['consumer_secret']
-	);
-	// Set content type to JSON
+        // The tokens
+        $tokens = array(
+                'user_id'         => $user_id,
+                'consumer_key'    => $creds[0]['consumer_key'],
+                'consumer_secret' => $creds[0]['consumer_secret']
+        );
+        // Set content type to JSON
     header("Content-Type: application/json");
     // Output JSON
-	echo json_encode($tokens);
+        echo json_encode($tokens);
         });
 
-        
+// testing
+$app->get('/list/:userID', function ($userID) {
+            $store = OAuthStore::instance();
+            var_dump($store->listConsumers($userID));
+        });
+
 /**
  * Step 4: Run the Slim application
  *
