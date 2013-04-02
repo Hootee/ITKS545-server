@@ -7,7 +7,7 @@
     <body>
         <div>
             
-                <form method="post" action="/index.php/save_user">
+                <form method="post" action="/itks545/index.php/save_user">
                     <fieldset>
                         <legend>Register</legend>
                         <div>

@@ -21,7 +21,7 @@ class dbconn {
         $this->db->close();
     }
 
-    public function addMessage($longitude, $latitude, $userID, $text) {
+    public function addMessage($userID, $latitude, $longitude, $text) {
         $query = <<<SQL
 INSERT INTO `data` (
       `ID` ,
@@ -101,6 +101,29 @@ SQL;
         return $user_ids;
     }
     
+    public function getEmail($id) {
+        $query = <<<SQL
+SELECT `users_email` FROM `users` WHERE ID=?
+SQL;
+
+        $statement = $this->db->prepare($query);
+        $statement->bind_param('i', $id);
+        $statement->execute();
+        if ($statement->errno > 0) {
+            echo "Failed to execute prepared statement: " . $statement->error;
+            exit();
+        }
+        $statement->bind_result($email);
+        $email = array();
+        if ($statement->fetch()) {
+            $email = array(
+                'users_email' => $email
+            );
+        }
+        $statement->free_result();
+        return $email;
+    }
+
     public function getMessage($id) {
         $query = <<<SQL
 SELECT `data_text`, `data_userID`, `data_longitude`, `data_latitude` FROM `data` WHERE ID=?
