@@ -7,7 +7,7 @@
     <body>
         <div>
             
-                <form method="post" action="/itks545/index.php/save_user">
+                <form method="post" action="<?php echo isset($action) ? $action : ""; ?>">
                     <fieldset>
                         <legend>Register</legend>
                         <div>
