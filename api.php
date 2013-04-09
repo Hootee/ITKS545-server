@@ -33,9 +33,9 @@ function authorized() {
  * @return null
  */
 function getUserId($session, $request) {
-    if (isset($session["user_id"]) && is_int($session["user_id"]) && $session["user_id"])
+    if (isset($session["user_id"]))
         return $session["user_id"];
-    if (isset($request["user_id"]) && is_int($request["user_id"]) && $request["user_id"])
+    if (isset($request["user_id"]))
         return $request["user_id"];
     return NULL;
 }
@@ -96,13 +96,12 @@ $authorizeActionAction = function () {
                     // See if the user clicked the 'allow' submit button (or whatever you choose)
                     //$authorized = array_key_exists('allow', $_POST);
                     $authorized = true;
-
                     // Set the request token to be authorized or not authorized
                     // When there was a oauth_callback then this will redirect to the consumer
                     $oauth_verifier = $server->authorizeFinish($authorized, $user_id);
                     echo $oauth_verifier;
                     // No oauth_callback, show the user the result of the authorization
-                } catch (OAuthException $e) {
+                } catch (Exception $e) {
                     // No token to be verified in the request, show a page where the user can enter the token to be verified
                     echo "exception";
                 }
@@ -152,7 +151,7 @@ $loginAction = function ($users_name, $users_password) {
 
             // The tokens
             $tokens = array(
-                'user_id' => $user_id,
+                'user_id' => $user_id['ID'],
                 'consumer_key' => $creds[0]['consumer_key'],
                 'consumer_secret' => $creds[0]['consumer_secret']
             );
