@@ -35,7 +35,6 @@ $app = new \Slim\Slim(array(
 $app->setName('foo');
 
 function authorized() {
-//    return true; // For testing...
     if (OAuthRequestVerifier::requestIsSigned()) {
         try {
             $req = new OAuthRequestVerifier();
@@ -128,10 +127,8 @@ $app->get('/access_token', function () {
 
 // This is a GET path to example.com/authorize
 $app->post('/authorize', function () {
-            // The current user
-//            session_start();           
-//            if (isset($_SESSION["user_id"]) && is_int($_SESSION["user_id"]) && $_SESSION["user_id"] > 0) {
-                // Fetch the oauth store and the oauth server.
+            // Fetch the oauth store and the oauth server.
+            if (isset($_POST['user_id']) && $_POST['user_id'] > 0) {
                 $store = OAuthStore::instance();
                 $server = new OAuthServer();
 
@@ -148,31 +145,27 @@ $app->post('/authorize', function () {
                     // Set the request token to be authorized or not authorized
                     // When there was a oauth_callback then this will redirect to the consumer
                     $oauth_verifier = $server->authorizeFinish($authorized, $_POST["user_id"]);
-//                    var_dump($_POST["user_id"]);
                     $json = array(
                     'pin'         => $oauth_verifier
                 );
-                    echo json_encode($json);
                     // No oauth_callback, show the user the result of the authorization
-                    // ** your code here **
+                    echo json_encode($json);
                     }
                 } catch (OAuthException $e) {
                     // No token to be verified in the request, show a page where the user can enter the token to be verified
                     // **your code here**
                     echo "exception";
                 }
-//            } else {
-//                $redirect = "/itks545/index.php/authorize";
-//                $action = "/itks545/login/index.php";
-//                require $_SERVER['DOCUMENT_ROOT'] . '/itks545/login/index.php';
-//            }
+            } else {
+                echo "foobar";
+            }
         });
 
 // This is a GET path to example.com/request_token
 $app->get('/register_user', function () {
             session_start();
-            $action = $_SERVER['DOCUMENT_ROOT'] . "/itks545/register_user/index.php";
-            require $_SERVER['DOCUMENT_ROOT'] . '/itks545/register_user/index.php';
+            $action = $_SERVER['DOCUMENT_ROOT'] . "/toarjusa/itks545/index.php/save_user";
+            require $_SERVER['DOCUMENT_ROOT'] . '/toarjusa/itks545/register_user/index.php';
         });
 
 // This saves a new user to our database and returns userID and tokens.
