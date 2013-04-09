@@ -91,14 +91,12 @@ SQL;
         }
         
         $statement->bind_result($ID);
-        $user_ids = array();
+        $user_id = 0;
         if ($statement->fetch()) {
-            $user_ids = array(
-                'ID' => $ID
-            );
+            $user_id = $ID;
         }
         $statement->free_result();
-        return $user_ids;
+        return $user_id;
     }
     
     public function getEmail($id) {

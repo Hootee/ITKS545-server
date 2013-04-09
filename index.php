@@ -70,10 +70,10 @@ $app->get('/locations', function () {
             
         });
 
-$app->post('/messages/add/', function () {
+$app->get('/messages/add/:user_id/:latitude/:longitude/:message', function ($user_id, $latitude, $longitude, $message) {
             if (authorized()) {
                 global $db;
-                $db->addMessage($_POST["userID"], $_POST["latitude"], $_POST["longitude"], $_POST["message"]);
+                $db->addMessage($user_id, $latitude, $longitude, $message);
                 echo "Authorized and saved!";
             } else {
                 echo "Not authorized!";
@@ -127,11 +127,10 @@ $app->get('/access_token', function () {
 
 
 // This is a GET path to example.com/authorize
-$app->get('/authorize', function () {
+$app->post('/authorize', function () {
             // The current user
-            session_start();                
-            
-            if (isset($_SESSION["user_id"]) && is_int($_SESSION["user_id"]) && $_SESSION["user_id"] > 0) {
+//            session_start();           
+//            if (isset($_SESSION["user_id"]) && is_int($_SESSION["user_id"]) && $_SESSION["user_id"] > 0) {
                 // Fetch the oauth store and the oauth server.
                 $store = OAuthStore::instance();
                 $server = new OAuthServer();
@@ -141,16 +140,19 @@ $app->get('/authorize', function () {
                     // Returns an array with the consumer key, consumer secret, token, token secret and token type.
                     $rs = $server->authorizeVerify();
 
-                    if ($_SERVER['REQUEST_METHOD'] == 'GET') { // CHANGE THIS TO POST
+                    if ($_SERVER['REQUEST_METHOD'] == 'POST') { // CHANGE THIS TO POST
                     // See if the user clicked the 'allow' submit button (or whatever you choose)
                     //$authorized = array_key_exists('allow', $_POST);
                     $authorized = true;
 
                     // Set the request token to be authorized or not authorized
                     // When there was a oauth_callback then this will redirect to the consumer
-                    $oauth_verifier = $server->authorizeFinish($authorized, $_SESSION["user_id"]);
-                    var_dump($_SESSION["user_id"]);
-                    echo "Your PIN is: " . $oauth_verifier;
+                    $oauth_verifier = $server->authorizeFinish($authorized, $_POST["user_id"]);
+//                    var_dump($_POST["user_id"]);
+                    $json = array(
+                    'pin'         => $oauth_verifier
+                );
+                    echo json_encode($json);
                     // No oauth_callback, show the user the result of the authorization
                     // ** your code here **
                     }
@@ -159,11 +161,11 @@ $app->get('/authorize', function () {
                     // **your code here**
                     echo "exception";
                 }
-            } else {
-                $redirect = "/itks545/index.php/authorize";
-                $action = "/itks545/login/index.php";
-                require $_SERVER['DOCUMENT_ROOT'] . '/itks545/login/index.php';
-            }
+//            } else {
+//                $redirect = "/itks545/index.php/authorize";
+//                $action = "/itks545/login/index.php";
+//                require $_SERVER['DOCUMENT_ROOT'] . '/itks545/login/index.php';
+//            }
         });
 
 // This is a GET path to example.com/request_token
@@ -199,30 +201,33 @@ $app->post('/save_user', function () {
 	echo json_encode($tokens);
         });
 
-// This log in user and returns userID and new tokens.
-$app->get('/login/:users_name/:users_password', function ($users_name, $users_password) {
+// This log in user and returns userID and old tokens.
+$app->post('/login', function () {
             global $db;
-            $user_id = $db->login($users_name, $users_password);
-        $store = OAuthStore::instance(); 
-        $creds = $store->listConsumers($user_id);
+            $user_id = $db->login($_POST["users_name"], $_POST["users_password"]);
+            if ($user_id != 0) {
+                $store = OAuthStore::instance(); 
+                $creds = $store->listConsumers($user_id);
 
-        // The tokens
-        $tokens = array(
-                'user_id'         => $user_id,
-                'consumer_key'    => $creds[0]['consumer_key'],
-                'consumer_secret' => $creds[0]['consumer_secret']
-        );
-        // Set content type to JSON
-    header("Content-Type: application/json");
-    // Output JSON
-        echo json_encode($tokens);
-        });
-
+                // The tokens
+                $json = array(
+                    'user_id'         => $user_id,
+                    'consumer_key'    => $creds[0]['consumer_key'],
+                    'consumer_secret' => $creds[0]['consumer_secret']
+                );
+            // Set content type to JSON
+            header("Content-Type: application/json");
+            // Output JSON
+            echo json_encode($json);
+            }
+});
+        
 // testing
 $app->get('/list/:userID', function ($userID) {
             $store = OAuthStore::instance();
             var_dump($store->listConsumers($userID));
         });
+        
 
 /**
  * Step 4: Run the Slim application
