@@ -95,7 +95,7 @@ $login = function () {
 // =============================================================================
 $registerUser = function () {
             session_start();
-            $_SERVER['DOCUMENT_ROOT'] . "/toarjusa/itks545/index.php/save_user";
+            $action = "/toarjusa/itks545/index.php/save_user";
             require $_SERVER['DOCUMENT_ROOT'] . '/toarjusa/itks545/register_user/index.php';
         };
 
