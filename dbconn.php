@@ -169,7 +169,7 @@ SQL;
      */
     public function getAllMessages() {
         $query = <<<SQL
-SELECT `data_text`, `data_userID`, `data_longitude`, `data_latitude` FROM `data`
+SELECT `data_text`, `ID`, `data_longitude`, `data_latitude` FROM `data`
 SQL;
         $statement = $this->db->prepare($query);
         $statement->execute();
