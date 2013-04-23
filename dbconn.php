@@ -1,9 +1,10 @@
 <?php
 
 /**
- * Description of dbconn
+ * Database API.
  *
- * @author tonsal
+ * @author Bela Borbely, Toni Salminen, Olga Tymofeva
+ * @version 2013-04-23
  */
 class dbconn {
 
@@ -21,6 +22,13 @@ class dbconn {
         $this->db->close();
     }
 
+    /**
+     * Add a new message to the database
+     * @param int $userID
+     * @param double $latitude
+     * @param double $longitude
+     * @param String $text
+     */
     public function addMessage($userID, $latitude, $longitude, $text) {
         $query = <<<SQL
 INSERT INTO `data` (
@@ -44,10 +52,11 @@ SQL;
     }
 
     /**
-     * Add a new user
-     * @param type $users_name
-     * @param type $users_password
-     * @param type $users_email
+     * Add a new user and returns userId.
+     * @param String $users_name
+     * @param String $users_password
+     * @param String $users_email
+     * @return int userId
      */
     public function addUser($users_name, $users_password, $users_email) {
         $query = <<<SQL
@@ -72,10 +81,10 @@ SQL;
     }
 
     /**
-     * 
-     * @param type $users_name
-     * @param type $users_password
-     * @return boolean
+     * Check username and password and return userId, if user found
+     * @param String $users_name
+     * @param String $users_password
+     * @return int userId
      */
     public function login($users_name,$users_password) {
         $query = <<<SQL
@@ -122,6 +131,11 @@ SQL;
         return $email;
     }
 
+    /**
+     * Search message by id
+     * @param int $id
+     * @return array columns
+     */
     public function getMessage($id) {
         $query = <<<SQL
 SELECT `data_text`, `data_userID`, `data_longitude`, `data_latitude` FROM `data` WHERE ID=?
@@ -136,19 +150,23 @@ SQL;
         }
         $statement->bind_result($text, $user, $lon, $lat);
         if ($statement->fetch()) {
-            $rows = array(
+            $columns = array(
                 'userID' => $user,
                 'longitude' => $lon,
                 'latitude' => $lat,
                 'text' => $text
             );
-            $json = json_encode($rows);
-            print_r($json);
+//            $json = json_encode($rows);
+//            print_r($json);
         }
-
         $statement->free_result();
+        return $columns;
     }
 
+    /**
+     * Get all message
+     * @return array messages
+     */
     public function getAllMessages() {
         $query = <<<SQL
 SELECT `data_text`, `data_userID`, `data_longitude`, `data_latitude` FROM `data`
@@ -160,22 +178,24 @@ SQL;
             exit();
         }
         $statement->bind_result($text, $user, $lon, $lat);
-        $json = array();
+        $rows = array();
         while ($statement->fetch()) {
-            $rows = array(
+            $columns = array(
                 'userID' => $user,
                 'longitude' => $lon,
                 'latitude' => $lat,
                 'text' => $text
             );
-            array_push($json, $rows);
+            array_push($rows, $columns);
         }
-        echo '{"messages" : ';
-        echo json_encode($json);
-        echo '}';
         $statement->free_result();
+        return $rows;
     }
 
+    /**
+     * Delete message by id
+     * @param type $id
+     */
     public function deleteMessage($id) {
         $query = <<<SQL
 DELETE FROM `data` WHERE `ID`=?
