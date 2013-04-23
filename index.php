@@ -47,15 +47,25 @@ $app->setName('ITKS545');
 // Messages
 $app->get('/messages/add/:user_id/:latitude/:longitude/:message', $addMessage);
 $app->get('/messages/get/:id', $getMessage);
-$app->post('/messages/getall/', $getAllMessage);
+$app->get('/messages/getall/', $getAllMessage);
 $app->get('/messages/delete/:id', $deleteMessage);
+$app->post('/messages/add/:user_id/:latitude/:longitude/:message', $addMessage);
+$app->post('/messages/get/:id', $getMessage);
+$app->post('/messages/getall/', $getAllMessage);
+$app->post('/messages/delete/:id', $deleteMessage);
+
 // Users
 $app->get('/register_user', $registerUser);
+$app->get('/save_user', $saveUser);
+$app->get('/login', $login);
+$app->post('/register_user', $registerUser);
 $app->post('/save_user', $saveUser);
 $app->post('/login', $login);
+
 // Oauth
 $app->get('/request_token', $requestToken);
-$app->get('/access_token', $accesToken);
+$app->get('/access_token', $accessToken);
+$app->get('/authorize', $authorize);
 $app->post('/authorize', $authorize);
 // testing
 $app->get('/list/:userID', $getUser);
