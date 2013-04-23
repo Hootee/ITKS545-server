@@ -63,7 +63,7 @@ $getAllMessage = function () {
 // =============================================================================
 $deleteMessage = function ($id) {
 
-            if (authenticated()) {
+            if (authorized()) {
                 global $db;
                 $result = $db->deleteMessage($id);
             }
