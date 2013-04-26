@@ -3,7 +3,7 @@
 /**
  * Database API.
  *
- * @author Bela Borbely, Toni Salminen, Olga Tymofeva
+ * @author Bela Borbely, Toni Salminen, Olga Tymofiieva
  * @version 2013-04-23
  */
 class dbconn {
